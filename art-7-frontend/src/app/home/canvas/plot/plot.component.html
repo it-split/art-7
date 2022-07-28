@@ -1,0 +1,45 @@
+<div *ngIf="plot && (!plot.claimable || showClaimablePlots)" [ngClass]="getPlotClass()"
+     (mouseleave)="isHovering = false" (mouseenter)="handleMouseEnter($event)">
+  <div *ngIf="plot?.claimable" class="claimable-plot-content unselectable"
+       (click)="tryClaimPlot()"
+  >
+    <mat-icon>add_box</mat-icon>
+    <span class=".mat-h4" style="text-transform: uppercase; letter-spacing: 1.5px">Claim</span>
+  </div>
+  <div class="p-absolute"
+       *ngIf="['INFO', 'ADMIN'].includes(selectedTool) && isHovering && !plot?.claimable && owner"
+  >
+    <div class="d-flex flex-column align-items-center plot-details">
+      <div class="d-flex flex-row">
+        <mat-icon *ngIf="owner.isVerified">verified_user</mat-icon>
+        <mat-icon *ngIf="!owner.isVerified">person_pin_circle</mat-icon>
+        <span>{{owner.username}}</span>
+        <mat-icon *ngIf="owner.isAdmin">local_police</mat-icon>
+      </div>
+      <div *ngIf="selectedTool === 'ADMIN'" class="admin-controls">
+<!--        <button disabled mat-mini-fab color="primary" [matTooltip]="'Mute User'">-->
+<!--          <mat-icon>headset_off</mat-icon>-->
+<!--        </button>-->
+<!--        <button disabled mat-mini-fab color="primary" [matTooltip]="'Stop User from Drawing'">-->
+<!--          <mat-icon>block</mat-icon>-->
+<!--        </button>-->
+        <button mat-mini-fab color="primary" [matTooltip]="'Wipe Plot Drawing'" (click)="tryWipePlotDrawing()">
+          <mat-icon>layers_clear</mat-icon>
+        </button>
+        <button mat-mini-fab color="primary" [matTooltip]="'Ban User and Delete Plot'" (click)="tryBanUserAndDeletePlot()">
+          <mat-icon>delete_forever</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!plot?.claimable" class="claimed-plot-content">
+    <canvas *ngIf="plot?.id" [attr.left]="canvasPositionX" [attr.top]="canvasPositionY"
+            style="image-rendering: pixelated" height="100" width="100" #canvas
+            [ngClass]="{
+              'h-100 w-100': !['INFO', 'ADMIN'].includes(selectedTool),
+              'info-plot-canvas': ['INFO', 'ADMIN'].includes(selectedTool)
+            }"
+    >
+    </canvas>
+  </div>
+</div>

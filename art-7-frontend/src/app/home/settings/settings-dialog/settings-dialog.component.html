@@ -1,0 +1,30 @@
+<h1 class="art-7-font" mat-dialog-title>
+  Settings
+</h1>
+<mat-dialog-content>
+  <h2 class="mb-0">General Settings</h2>
+  <div class="settings-group">
+    <mat-checkbox class="settings-checkbox" [checked]="showChat" (change)="handleShowChatChange($event)">Show chat</mat-checkbox>
+    <mat-checkbox [checked]="showClaimablePlots" (change)="handleShowClaimablePlotsChange($event)">Show claimable plots</mat-checkbox>
+    <span class="settings-info" *ngIf="account">User ID: {{account.id}}</span>
+  </div>
+  <div *ngIf="serverSettings && account?.isAdmin">
+    <h2 class="mb-0">Admin Settings</h2>
+    <div class="settings-group">
+      <mat-checkbox class="settings-checkbox" [checked]="serverSettings.registrationEnabled" (change)="registrationEnabledChange($event)">
+        Enable registration
+      </mat-checkbox>
+      <mat-checkbox class="settings-checkbox" [checked]="serverSettings.plotClaimingEnabled" (change)="plotClaimingEnabledChange($event)">
+        Enable plot claiming
+      </mat-checkbox>
+      <mat-checkbox class="settings-checkbox" [checked]="serverSettings.drawingEnabled" (change)="drawingEnabledChange($event)">
+        Enable drawing
+      </mat-checkbox>
+      <mat-checkbox class="settings-checkbox" [checked]="serverSettings.chatEnabled" (change)="chatEnabledChange($event)">
+        Enable chat
+      </mat-checkbox>
+    </div>
+  </div>
+
+  <button (click)="dialogRef.close()" class="w-100" mat-flat-button color="primary">Close</button>
+</mat-dialog-content>

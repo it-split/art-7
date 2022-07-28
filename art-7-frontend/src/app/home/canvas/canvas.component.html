@@ -1,0 +1,145 @@
+
+<div class="canvas-container">
+  <div *ngIf="selectedTool === paintTool" class="cursor"
+       [style.top]="mouseY - (10 * scale) + 'px'" [style.left]="mouseX - (10 * scale) + 'px'"
+  >
+    <svg pointer-events="none" [attr.height]="20 * scale + 'px'" [attr.width]="20 * scale + 'px'">
+      <circle [attr.cx]="(10 * scale)" [attr.cy]="(10 * scale)" fill="#ffffff50"
+              [attr.r]="(selectedBrushSize / 8) * scale">
+      </circle>
+      <circle [attr.cx]="(10 * scale)" [attr.cy]="(10 * scale)" fill="#00000050"
+              [attr.r]="(selectedBrushSize / 9) * scale">
+      </circle>
+      <circle [attr.cx]="(10 * scale)" [attr.cy]="(10 * scale)" [attr.fill]="selectedColour"
+              [attr.r]="(selectedBrushSize / 10) * scale">
+      </circle>
+    </svg>
+  </div>
+  <div *ngIf="selectedTool === colourPickerTool" class="cursor" [style.top]="mouseY - 42 + 'px'" [style.left]="mouseX - 6 + 'px'">
+    <svg pointer-events="none" xmlns="http://www.w3.org/2000/svg" [attr.height]="48" [attr.width]="48">
+      <path stroke-width="1px" stroke="#ffffff" fill="#000000" d="M7.5 42Q6.85 42 6.425 41.575Q6 41.15 6 40.5V34.2Q6 33.9 6.1 33.65Q6.2 33.4 6.45 33.15L24.85 14.75L22.25 12.15Q21.85 11.75 21.875 11.125Q21.9 10.5 22.3 10.1Q22.7 9.7 23.325 9.7Q23.95 9.7 24.35 10.1L27.9 13.7L35 6.6Q35.55 6.05 36.175 6.05Q36.8 6.05 37.35 6.6L41.4 10.65Q41.95 11.2 41.95 11.825Q41.95 12.45 41.4 13L34.3 20.1L37.9 23.7Q38.3 24.1 38.3 24.7Q38.3 25.3 37.9 25.7Q37.5 26.1 36.875 26.1Q36.25 26.1 35.85 25.7L33.25 23.15L14.85 41.55Q14.6 41.8 14.35 41.9Q14.1 42 13.8 42ZM9 39H13.35L31.1 21.25L26.75 16.9L9 34.65ZM32.15 18 38.35 11.8 36.2 9.65 30 15.85ZM32.15 18 30 15.85 36.2 9.65 38.35 11.8Z"/>
+    </svg>
+    <div [style.background-color]="hoverColour" [style.top]="mouseY - 42 + 'px'" style="width: 48px; height: 16px; border-radius: 10px; border: 2px solid black;"></div>
+  </div>
+
+  <mat-progress-spinner mode="indeterminate" *ngIf="loadingPlots && !reloadingPlots"></mat-progress-spinner>
+
+  <div class="controls-container" (mouseenter)="disablePanning = true" (mouseleave)="disablePanning = false;">
+    <div class="zoom-control">
+      <div class="flex-grow d-flex flex-column align-items-center">
+        <button mat-icon-button (click)="resetScaleAndOrigin()" matTooltip="Reset Zoom">
+          <mat-icon>center_focus_strong</mat-icon>
+        </button>
+        <mat-slider vertical class="flex-grow" [min]="MIN_ZOOM" [max]="MAX_ZOOM" step="0.2" (input)="setScale($event.value ?? 1)" [ngModel]="scale"></mat-slider>
+      </div>
+    </div>
+    <div class="tool-controls">
+      <div class="d-flex flex-row" style="margin-bottom: 2px;">
+        <button mat-icon-button [color]="selectedTool === 'PAN' ? 'accent' : 'primary'"
+                (click)="setSelectedTool(panTool)"
+                matTooltip="Pan Tool"
+        >
+          <mat-icon>open_with</mat-icon>
+        </button>
+        <button mat-icon-button [color]="selectedTool === 'PAINT' ? 'accent' : 'primary'"
+                (click)="setSelectedTool(paintTool)"
+                matTooltip="Paint Tool"
+        >
+          <mat-icon>brush</mat-icon>
+        </button>
+        <button mat-icon-button [color]="selectedTool === 'INFO' ? 'accent' : 'primary'"
+                (click)="setSelectedTool(infoTool)"
+                matTooltip="Plot Info Tool"
+        >
+          <mat-icon>info</mat-icon>
+        </button>
+        <button mat-icon-button [color]="selectedTool === 'COLOR_PICKER' ? 'accent' : 'primary'"
+                (click)="previousTool = selectedTool; setSelectedTool(colourPickerTool);"
+                matTooltip="Colour Picker Tool"
+        >
+          <mat-icon>colorize</mat-icon>
+        </button>
+        <button *ngIf="account?.isAdmin" mat-icon-button [color]="selectedTool === 'ADMIN' ? 'accent' : 'primary'"
+                (click)="previousTool = selectedTool; setSelectedTool(adminTool);"
+                matTooltip="⚠️ Admin Tool ⚠️"
+        >
+          <mat-icon>admin_panel_settings</mat-icon>
+        </button>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="d-flex flex-row" style="margin-top: 2px; margin-bottom: 2px;">
+        <button mat-icon-button (click)="setSelectedBrushSize(10)">
+          <svg height="20" width="20">
+            <circle cx="10" cy="10" [attr.fill]="selectedBrushSize === 10 ? '#d81b60' : 'black'" r="1"></circle>
+          </svg>
+        </button>
+        <button mat-icon-button (click)="setSelectedBrushSize(20)">
+          <svg height="20" width="20">
+            <circle cx="10" cy="10" [attr.fill]="selectedBrushSize === 20 ? '#d81b60' : 'black'" r="2"></circle>
+          </svg>
+        </button>
+        <button mat-icon-button (click)="setSelectedBrushSize(40)">
+          <svg height="20" width="20">
+            <circle cx="10" cy="10" [attr.fill]="selectedBrushSize === 40 ? '#d81b60' : 'black'" r="4"></circle>
+          </svg>
+        </button>
+        <button mat-icon-button (click)="setSelectedBrushSize(70)">
+          <svg height="20" width="20">
+            <circle cx="10" cy="10" [attr.fill]="selectedBrushSize === 70 ? '#d81b60' : 'black'" r="7"></circle>
+          </svg>
+        </button>
+        <button mat-icon-button (click)="setSelectedBrushSize(100)">
+          <svg height="20" width="20">
+            <circle cx="10" cy="10" [attr.fill]="selectedBrushSize === 100 ? '#d81b60' : 'black'" r="10"></circle>
+          </svg>
+        </button>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="d-flex flex-row" style="margin-top: 6px;">
+        <button class="w-100" mat-flat-button [style.background-color]="selectedColour" (click)="showColourPicker = true"
+                [(cpToggle)]="showColourPicker" [(colorPicker)]="selectedColour" (colorPickerChange)="setSelectedColour($event)" [cpOutputFormat]="'hex'" [cpAlphaChannel]="'disabled'"
+        >
+          🎨
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="plots?.length">
+    <div *ngFor="let plotRow of plots">
+      <div class="plots-centre"
+           [style.left]="originX + originXScaleOffset +  originXPanOffset + 'px'"
+           [style.top]="originY + originYScaleOffset + originYPanOffset + 'px'"
+      >
+        <!-- -50 is half of the width, used to centre the plots  -->
+        <!-- plot position offset is determined by the plot co-ordinates * plot size -->
+        <canvas-plot *ngFor="let plot of plotRow; let i = index" [ngClass]="{'plot': !!plot}" class="unselectable"
+                     [style.width]="(relativePlotSize()) + 'px'"
+                     [style.height]="(relativePlotSize()) + 'px'"
+                     [style.top]="((plot?.x ?? 0) * relativePlotSize()) - relativePlotSize()/2 + 'px'"
+                     [style.left]="((plot?.y ?? 0) * relativePlotSize()) - relativePlotSize()/2 + 'px'"
+                     [plot]="plot" [scale]="scale"
+                     [canvasPositionX]="((plot?.x ?? 0) * relativePlotSize()) - relativePlotSize()/2"
+                     [canvasPositionY]="((plot?.y ?? 0) * relativePlotSize()) - relativePlotSize()/2"
+                     [selectedColor]="selectedColour" [selectedTool]="selectedTool" [selectedBrushSize]="selectedBrushSize"
+                     (onClaim)="claimPlot(plot.x, plot.y)"
+                     [attr.id]="'plot-' + i"
+                     (hoverColour)="changeHoverColor($event)"
+                     [drawingEnabled]="!!serverSettings?.drawingEnabled"
+                     (onBanAndDeletePlot)="banUserAndDeletePlot(plot.id, plot.ownerId)"
+                     (onWipePlotDrawing)="wipePlotDrawing(plot.id, plot.ownerId)"
+
+        >
+        </canvas-plot>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-column align-items-center text-align-center" *ngIf="!loadingPlots && !plots?.length">
+    <h1 class="art-7-font">Woah, no plots found!</h1>
+    <h2 class="art-7-font">Guess you're one of the first ones here</h2>
+    <h2 class="art-7-font">✨ Neat ✨</h2>
+    <h2 *ngIf="!serverSettings?.plotClaimingEnabled">Split will enable plot claiming soon x 💖</h2>
+    <button mat-flat-button [disabled]="!account || !serverSettings?.plotClaimingEnabled" color="accent" (click)="claimPlot(0, 0)">Create the first plot</button>
+  </div>
+</div>

@@ -1,0 +1,42 @@
+<div class="d-flex flex-row w-100 space-between align-items-center">
+  <h2 class="art-7-font mb-0">
+    Users
+  </h2>
+  <button [disabled]="isLoading" mat-icon-button (click)="loadUsers()">
+    <mat-icon>refresh</mat-icon>
+  </button>
+</div>
+<div class="d-flex flex-column w-100">
+  <ng-container *ngIf="isLoading">
+    <mat-spinner mode="indeterminate"></mat-spinner>
+  </ng-container>
+  <ng-container *ngIf="!isLoading && users">
+    <h3 class="mb-0 art-7-font">Online</h3>
+    <div class="users-container">
+      <div *ngIf="!users.onlineUsers?.length">
+        <span>Nobody is online 😔
+        </span>
+      </div>
+      <div *ngFor="let user of users.onlineUsers"
+           [ngClass]="user.plotId ? 'user-card' : 'user-card-disabled'"
+           (click)="jumpToPlot(user.plotId)"
+      >
+        {{user.username}}
+        <mat-icon *ngIf="user.plotId">open_in_new</mat-icon>
+      </div>
+    </div>
+    <h3 class="mb-0 art-7-font">Offline</h3>
+    <div class="users-container">
+      <div *ngIf="!users.offlineUsers?.length">
+        <span>Nobody is offline 🤯</span>
+      </div>
+      <div *ngFor="let user of users.offlineUsers"
+           [ngClass]="user.plotId ? 'user-card' : 'user-card-disabled'"
+           (click)="jumpToPlot(user.plotId)"
+      >
+        {{user.username}}
+        <mat-icon *ngIf="user.plotId">open_in_new</mat-icon>
+      </div>
+    </div>
+  </ng-container>
+</div>

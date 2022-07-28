@@ -1,0 +1,31 @@
+<h1 class="art-7-font" mat-dialog-title>🎨 Register for Art 7</h1>
+<h3>Split will destroy anybody who impersonates others<br/>
+  Password must be at least 5 characters 🙂
+</h3>
+<mat-dialog-content>
+  <form class="register-form" [formGroup]="registerForm" (ngSubmit)="tryRegister()">
+    <mat-form-field required appearance="fill">
+      <mat-icon matPrefix>person</mat-icon>
+      <mat-label><span>Username</span></mat-label>
+      <input matInput id="user-text-field" placeholder="Username" formControlName="username"/>
+    </mat-form-field>
+    <mat-form-field required appearance="fill">
+      <mat-icon matPrefix>lock</mat-icon>
+      <mat-label><span>Password</span></mat-label>
+      <input matInput id="new-password-text-field" placeholder="Password" type="password" formControlName="password"/>
+    </mat-form-field>
+    <mat-form-field required appearance="fill">
+      <mat-icon matPrefix>lock</mat-icon>
+      <mat-label><span>Confirm Password</span></mat-label>
+      <input matInput id="confirm-password-text-field" placeholder="Confirm Password" type="password" formControlName="confirmPassword"/>
+    </mat-form-field>
+    <span *ngIf="registerForm.hasError('notMatched')" class="form-error">
+      <mat-icon>error</mat-icon>
+      <span style="margin-left: 6px;">Passwords don't match</span>
+    </span>
+    <button [disabled]="registerForm.status !== 'VALID' || isLoggingIn"
+            style="flex-grow: 1" mat-flat-button color="accent"
+            type="submit"
+    >Register</button>
+  </form>
+</mat-dialog-content>

@@ -1,0 +1,92 @@
+.claimable-plot {
+  border: 2px solid #7a7a7a;
+  margin: 2px;
+  padding: 4px;
+  border-radius: 20%;
+  flex-grow: 1;
+  box-sizing: border-box;
+  &:hover {
+    cursor: pointer;
+    border-color: #e200ff;
+  }
+}
+
+.unclaimable-plot {
+  border: 2px solid #b6b6b6;
+  margin: 2px;
+  padding: 4px;
+  border-radius: 20%;
+  flex-grow: 1;
+  box-sizing: border-box;
+  color: #7a7a7a;
+}
+
+.claimable-plot-content {
+  background-color: #f2f2f2;
+  width: 100%;
+  height: 100%;
+  border-radius: 20%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.claimed-plot {
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.claimed-plot-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.current-users-plot {
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.plot-details {
+  background-color: #d81b60;
+  color: white;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 3px 8px 3px 8px;
+  justify-items: center;
+  position: absolute;
+  z-index: 99;
+}
+
+.plot-info.current-users-plot {
+  border-color: #e200ff;
+}
+
+.plot-info {
+  margin: 5px;
+  border: 2px solid #9d9d9d;
+  border-radius: 8px;
+}
+
+.info-plot-canvas {
+  width: 80%;
+  height: 80%;
+}
+
+.admin-controls {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-around;
+  padding: 4px 12px 4px 12px;
+  margin-right: 8px;
+  background-color: #f2f2f2;
+  border-radius: 8px;
+  color: black;
+  align-items: center;
+}

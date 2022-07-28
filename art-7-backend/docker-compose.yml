@@ -1,0 +1,52 @@
+version: '3.8'
+
+volumes:
+  art7_mariadb_data:
+    driver: local
+
+services:
+  art7-frontend:
+    image: a7-frontend
+    ports:
+      - 4200:80
+
+  art7-backend:
+    image: a7-backend
+    environment:
+      PORT: 3000
+      BASE_URL: http://localhost:3000
+      FRONTEND_ORIGIN: http://localhost:4200
+      SESSION_SECRET: S3Xjz1b3q3Q2Emxue9jIl3jUi3LZ31Vo
+      BCRYPT_SALT_OR_ROUNDS: 10
+      DATABASE_HOST: host.docker.internal
+      DATABASE_NAME: art7
+      DATABASE_USER: root
+      DATABASE_PASSWORD: password
+      DATABASE_PORT: 3304
+      SYNC_DATABASE: 1
+      REDIS_PORT: 6379
+      REDIS_HOST: host.docker.internal
+    ports:
+      - 3000:3000
+      - 80:80
+
+  art7-mariadb:
+    image: mariadb
+    restart: always
+    volumes:
+      - art7_mariadb_data:/var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: password
+    ports:
+      - 3304:3306
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 3307:8080
+
+  art7-redis:
+    image: redis:7-alpine
+    ports:
+      - 6379:6379

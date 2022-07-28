@@ -1,0 +1,31 @@
+<div class="chat-box" *ngIf="showChat"
+     (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()"
+     [style.z-index]="bringToFront ? 999 : 400"
+>
+  <div class="d-flex flex-column-reverse messages-container" #messagesContainer>
+    <div *ngFor="let message of (isHovering ? chatMessages : recentChatMessages)" class="d-flex flex-row message">
+      <span class="username" *ngIf="message.username">{{message.username}}</span>
+      <span class="message-content" [style.font-style]="message.username ? null : 'italic'">
+        {{message.msg}}
+      </span>
+    </div>
+  </div>
+  <div class="chat-input-container">
+    <button mat-icon-button (click)="bringToFront = !bringToFront" *ngIf="isHandset$ | async">
+      <mat-icon>{{bringToFront ? 'zoom_out_map' : 'zoom_in_map'}}</mat-icon>
+    </button>
+    <mat-form-field>
+      <input (keyup.enter)="sendMessage()" maxlength="128" [formControl]="chatForm"
+             autocomplete="off" matInput placeholder="Chat"
+             (focusin)="bringToFront = true"
+      />
+      <button (click)="sendMessage()" mat-icon-button matSuffix
+              [disabled]="chatForm.disabled || chatForm.invalid || !chatForm?.value">
+        <mat-icon matSuffix>send</mat-icon>
+      </button>
+    </mat-form-field>
+    <button mat-icon-button (click)="openUsersBottomSheet()">
+      <mat-icon>people</mat-icon>
+    </button>
+  </div>
+</div>

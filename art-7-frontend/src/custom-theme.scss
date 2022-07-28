@@ -1,0 +1,68 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+
+$dark-text: #000000;
+$light-text: #ffffff;
+
+$dark-primary-text: rgba($dark-text, 0.87);
+$light-primary-text: $light-text;
+
+$mat-primary: (
+  main: #333333,
+  lighter: #c2c2c2,
+  darker: #202020,
+  200: #333333, // For slide toggle,
+  contrast : (
+    main: $light-primary-text,
+    lighter: $dark-primary-text,
+    darker: $light-primary-text,
+  )
+);
+
+$mat-accent: (
+  main: #d81b60,
+  lighter: #ff5c8d,
+  darker: #a00037,
+  200: #d81b60, // For slide toggle,
+  contrast : (
+    main: $light-primary-text,
+    lighter: $dark-primary-text,
+    darker: $light-primary-text,
+  )
+);
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$a7-frontend-primary: mat.define-palette($mat-primary, main, lighter, darker);
+$a7-frontend-accent: mat.define-palette($mat-accent, main, lighter, darker);
+
+// The warn palette is optional (defaults to red).
+$a7-frontend-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$a7-frontend-theme: mat.define-light-theme((
+  color: (
+    primary: $a7-frontend-primary,
+    accent: $a7-frontend-accent,
+    warn: $a7-frontend-warn,
+  )
+));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($a7-frontend-theme);
+
+
+html, body { height: 100%; overflow: hidden; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

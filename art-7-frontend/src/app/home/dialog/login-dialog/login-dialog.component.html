@@ -1,0 +1,19 @@
+<h1 class="art-7-font" mat-dialog-title>Login</h1>
+<mat-dialog-content>
+  <form class="login-form" [formGroup]="loginForm" (ngSubmit)="tryLogin()">
+    <mat-form-field required appearance="fill">
+      <mat-icon matPrefix>person</mat-icon>
+      <mat-label><span>Username</span></mat-label>
+      <input matInput id="user-text-field" placeholder="Username" formControlName="username"/>
+    </mat-form-field>
+    <mat-form-field required appearance="fill">
+      <mat-icon matPrefix>lock</mat-icon>
+      <mat-label><span>Password</span></mat-label>
+      <input matInput id="password-text-field" placeholder="Password" type="password" formControlName="password"/>
+    </mat-form-field>
+    <button [disabled]="loginForm.status !== 'VALID' || isLoggingIn"
+            style="flex-grow: 1" mat-flat-button color="accent"
+            type="submit"
+    >Login</button>
+  </form>
+</mat-dialog-content>

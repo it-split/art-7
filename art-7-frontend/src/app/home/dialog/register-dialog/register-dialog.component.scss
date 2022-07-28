@@ -1,0 +1,16 @@
+.register-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-error {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px 5px 10px;
+  background-color: #f2f2f2;
+  color: #a00037;
+  border-radius: 50px;
+  margin-bottom: 1em;
+  border: 1px solid #a00037;
+  box-sizing: border-box;
+}
